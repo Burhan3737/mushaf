@@ -5,7 +5,7 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 
 export const metadata: Metadata = {
-  title: 'Mushaf Text — Arabic Overlay Generator',
+  title: 'Mushaf — Quranic Text Generator',
   description: 'Generate transparent PNG overlays of Quranic text for video editing',
 };
 
