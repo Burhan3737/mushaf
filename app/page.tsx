@@ -115,6 +115,25 @@ export default function HomePage() {
         </div>
       </header>
 
+      {/* Footer banner */}
+      <div className="border-b border-neutral-800 bg-neutral-900/50 py-2 px-4">
+        <div className="max-w-screen-xl mx-auto flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs text-neutral-500">
+          <span>
+            Made with{' '}
+            <span className="text-red-500">♥</span>
+            {' '}for the Ummah by{' '}
+            <a
+              href="https://instagram.com/bhn.recites"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-amber-400 hover:text-amber-300 transition-colors"
+            >
+              @bhn.recites
+            </a>
+          </span>
+        </div>
+      </div>
+
       {/* Main layout: 2-column on desktop */}
       <main className="max-w-screen-xl mx-auto px-4 py-6">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-6 items-start">
