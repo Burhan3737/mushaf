@@ -44,15 +44,13 @@ export default function ExportButton({ config, isFontLoaded }: ExportButtonProps
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
             </svg>
-            Exporting…
+            Generating…
           </span>
         ) : (
           'Download PNG'
         )}
       </button>
-      {error && (
-        <p className="text-sm text-red-400 text-center">{error}</p>
-      )}
+      {error && <p className="text-sm text-red-400 text-center">{error}</p>}
       <p className="text-xs text-neutral-600 text-center">
         Transparent PNG · {config.canvasWidth}px wide · 2× resolution
       </p>
