@@ -22,7 +22,17 @@ export default function TextInput({ value, onChange }: TextInputProps) {
   return (
     <div className="space-y-1.5">
       <div className="flex items-center justify-between">
-        <label className="text-sm font-medium text-neutral-300">Arabic Text</label>
+        <label className="text-sm font-medium text-neutral-300">
+        Text{' '}
+          <a
+            href="https://quran.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs font-normal text-neutral-500 hover:text-amber-400 transition-colors"
+          >
+            ↗ quran.com
+          </a>
+        </label>
         {value && (
           <button
             type="button"

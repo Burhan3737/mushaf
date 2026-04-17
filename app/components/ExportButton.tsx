@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { TextConfig } from '../types';
 import { exportPng } from '../lib/exportPng';
 
@@ -12,6 +12,17 @@ interface ExportButtonProps {
 export default function ExportButton({ config, isFontLoaded }: ExportButtonProps) {
   const [exporting, setExporting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [inApp, setInApp] = useState(false);
+  const [isIOS, setIsIOS] = useState(false);
+
+  useEffect(() => {
+    setInApp(
+      /Instagram|FBAN|FBAV|FB_IAB|Twitter|Line\/|MicroMessenger|TikTok|Snapchat|LinkedIn/.test(
+        navigator.userAgent
+      ) || true
+    );
+    setIsIOS(/iPad|iPhone|iPod/.test(navigator.userAgent));
+  }, []);
 
   const fontReady = isFontLoaded(config.fontId);
 
@@ -52,6 +63,13 @@ export default function ExportButton({ config, isFontLoaded }: ExportButtonProps
       </button>
       {error && (
         <p className="text-sm text-red-400 text-center">{error}</p>
+      )}
+      {inApp && (
+        <p className="text-xs text-amber-500/80 text-center">
+          {isIOS
+            ? 'Open in Safari to download'
+            : 'Open in Chrome to download'}
+        </p>
       )}
       <p className="text-xs text-neutral-600 text-center">
         Transparent PNG · {config.canvasWidth}px wide · 2× resolution
