@@ -1,25 +1,17 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { TextConfig } from "../types";
-import { exportPng, isInAppBrowser } from "../lib/exportPng";
+import { useState } from 'react';
+import { TextConfig } from '../types';
+import { exportPng } from '../lib/exportPng';
 
 interface ExportButtonProps {
   config: TextConfig;
   isFontLoaded: (fontId: string) => boolean;
 }
 
-export default function ExportButton({
-  config,
-  isFontLoaded,
-}: ExportButtonProps) {
+export default function ExportButton({ config, isFontLoaded }: ExportButtonProps) {
   const [exporting, setExporting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [inApp, setInApp] = useState(false);
-
-  useEffect(() => {
-    setInApp(isInAppBrowser());
-  }, []);
 
   const fontReady = isFontLoaded(config.fontId);
 
@@ -30,9 +22,7 @@ export default function ExportButton({
     try {
       await exportPng(config);
     } catch (err) {
-      // User cancelled the share sheet — not a real error
-      if (err instanceof Error && err.name === "AbortError") return;
-      setError(err instanceof Error ? err.message : "Export failed");
+      setError(err instanceof Error ? err.message : 'Export failed');
     } finally {
       setExporting(false);
     }
@@ -50,38 +40,21 @@ export default function ExportButton({
       >
         {exporting ? (
           <span className="flex items-center justify-center gap-2">
-            <svg
-              className="animate-spin w-4 h-4"
-              viewBox="0 0 24 24"
-              fill="none"
-            >
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              />
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-              />
+            <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
             </svg>
-            Generating…
+            Exporting…
           </span>
-        ) : inApp ? (
-          "Save Image"
         ) : (
-          "Download PNG"
+          'Download PNG'
         )}
       </button>
-
-      {error && <p className="text-sm text-red-400 text-center">{error}</p>}
-
+      {error && (
+        <p className="text-sm text-red-400 text-center">{error}</p>
+      )}
       <p className="text-xs text-neutral-600 text-center">
-        {`Transparent PNG · ${config.canvasWidth}px wide · 2× resolution`}
+        Transparent PNG · {config.canvasWidth}px wide · 2× resolution
       </p>
     </div>
   );
