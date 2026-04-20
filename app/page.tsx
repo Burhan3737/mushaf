@@ -1,6 +1,6 @@
 "use client";
 
-import { useReducer, useEffect } from "react";
+import { useReducer, useEffect, useState } from "react";
 import { TextConfig, TextConfigAction } from "./types";
 import { DEFAULT_FONT_ID, getFontById } from "./lib/fonts";
 import { useFontLoader } from "./hooks/useFontLoader";
@@ -50,6 +50,8 @@ function reducer(state: TextConfig, action: TextConfigAction): TextConfig {
       return { ...state, lineHeight: action.payload };
     case "SET_CANVAS_WIDTH":
       return { ...state, canvasWidth: action.payload };
+    case "SET_ALL":
+      return { ...action.payload };
     default:
       return state;
   }
@@ -58,6 +60,7 @@ function reducer(state: TextConfig, action: TextConfigAction): TextConfig {
 export default function HomePage() {
   // Always start with DEFAULT_CONFIG (safe for SSR), then hydrate from localStorage
   const [config, dispatch] = useReducer(reducer, DEFAULT_CONFIG);
+  const [draft, setDraft] = useState<TextConfig>(DEFAULT_CONFIG);
   const { loadFont, isFontLoaded, isFontLoading, preloadFonts } =
     useFontLoader();
 
@@ -66,13 +69,8 @@ export default function HomePage() {
     const saved = loadConfig();
     // Only dispatch if something differs from the default
     if (JSON.stringify(saved) !== JSON.stringify(DEFAULT_CONFIG)) {
-      dispatch({ type: "SET_TEXT", payload: saved.text });
-      dispatch({ type: "SET_FONT", payload: saved.fontId });
-      dispatch({ type: "SET_FONT_SIZE", payload: saved.fontSize });
-      dispatch({ type: "SET_COLOR", payload: saved.color });
-      dispatch({ type: "SET_ALIGN", payload: saved.align });
-      dispatch({ type: "SET_LINE_HEIGHT", payload: saved.lineHeight });
-      dispatch({ type: "SET_CANVAS_WIDTH", payload: saved.canvasWidth });
+      dispatch({ type: "SET_ALL", payload: saved });
+      setDraft(saved);
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -102,13 +100,20 @@ export default function HomePage() {
     ]);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Load font whenever selection changes
+  // Load font whenever draft font selection changes
   useEffect(() => {
-    const font = getFontById(config.fontId);
+    const font = getFontById(draft.fontId);
     if (font && !isFontLoaded(font.id)) {
       loadFont(font);
     }
-  }, [config.fontId]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [draft.fontId]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const STYLE_FIELDS = ['fontId', 'fontSize', 'color', 'align', 'lineHeight', 'canvasWidth'] as const;
+  const hasChanges = STYLE_FIELDS.some((k) => draft[k] !== config[k]);
+
+  function handleSave() {
+    dispatch({ type: "SET_ALL", payload: { ...config, ...draft } });
+  }
 
   return (
     <div className="min-h-screen bg-neutral-950 text-white">
@@ -176,19 +181,19 @@ export default function HomePage() {
                 }
               />
               <FontPicker
-                selectedFontId={config.fontId}
+                selectedFontId={draft.fontId}
                 onSelect={(fontId) =>
-                  dispatch({ type: "SET_FONT", payload: fontId })
+                  setDraft((prev) => ({ ...prev, fontId }))
                 }
                 loadFont={loadFont}
                 isFontLoaded={isFontLoaded}
                 isFontLoading={isFontLoading}
               />
               <StyleControls
-                config={config}
-                dispatch={
-                  dispatch as React.Dispatch<{ type: string; payload: unknown }>
-                }
+                draft={draft}
+                setDraft={setDraft}
+                onSave={handleSave}
+                hasChanges={hasChanges}
               />
             </div>
           </div>

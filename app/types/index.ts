@@ -30,4 +30,5 @@ export type TextConfigAction =
   | { type: 'SET_COLOR'; payload: string }
   | { type: 'SET_ALIGN'; payload: TextAlign }
   | { type: 'SET_LINE_HEIGHT'; payload: number }
-  | { type: 'SET_CANVAS_WIDTH'; payload: CanvasWidth };
+  | { type: 'SET_CANVAS_WIDTH'; payload: CanvasWidth }
+  | { type: 'SET_ALL'; payload: TextConfig };
